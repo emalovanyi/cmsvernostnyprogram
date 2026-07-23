@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#F2541B">
+<title>Vernostný program | GymBeam.sk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --orange:#F2541B;
+    --orange-dark:#D8430D;
+    --orange-tint:#FFF1EB;
+    --ink:#15171A;
+    --muted:#6A7078;
+    --line:#E8E9EB;
+    --line-soft:#F1F2F3;
+    --bg:#FFFFFF;
+    --bg-soft:#F7F8F9;
+    --bg-warm:#FFFBF7;
+    --footer:#16181B;
+    --footer-line:#2A2D31;
+    --radius:14px;
+    --radius-sm:10px;
+    --shadow:0 1px 2px rgba(20,23,26,.04),0 8px 24px rgba(20,23,26,.06);
+    --maxw:1280px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    color:var(--ink);background:var(--bg);line-height:1.6;
+    -webkit-font-smoothing:antialiased;font-size:15px;
+  }
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3,h4{font-family:'Manrope',sans-serif;letter-spacing:-.02em;line-height:1.15}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  img{max-width:100%;display:block}
+
+  /* ---------- TOP UTILITY BAR ---------- */
+  .utility{background:var(--ink);color:#fff;font-size:12.5px}
+  .utility .wrap{display:flex;align-items:center;justify-content:center;gap:22px;height:38px;flex-wrap:wrap;text-align:center}
+  .utility span{display:inline-flex;align-items:center;gap:7px;opacity:.92}
+  .utility svg{width:15px;height:15px;stroke:var(--orange)}
+  @media(max-width:760px){.utility .wrap span:nth-child(n+2){display:none}}
+
+  /* ---------- HEADER ---------- */
+  header.site{position:sticky;top:0;z-index:60;background:#fff;border-bottom:1px solid var(--line)}
+  .header-main{display:flex;align-items:center;gap:28px;height:74px}
+  .logo{font-family:'Manrope';font-weight:800;font-size:25px;letter-spacing:-.03em;color:var(--ink);white-space:nowrap}
+  .logo b{color:var(--orange)}
+  .search{flex:1;display:flex;align-items:center;background:var(--bg-soft);border:1.5px solid var(--line);border-radius:999px;padding:0 6px 0 18px;height:46px;transition:border-color .15s,background .15s}
+  .search:focus-within{border-color:var(--orange);background:#fff}
+  .search input{flex:1;border:0;background:transparent;font-family:inherit;font-size:14.5px;outline:none;color:var(--ink)}
+  .search button{border:0;background:var(--orange);color:#fff;width:36px;height:36px;border-radius:999px;display:grid;place-items:center;cursor:pointer;transition:background .15s}
+  .search button:hover{background:var(--orange-dark)}
+  .search svg{width:18px;height:18px}
+  .header-actions{display:flex;align-items:center;gap:6px}
+  .iconbtn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 12px;border-radius:12px;color:var(--ink);font-size:11.5px;font-weight:500;transition:background .15s;cursor:pointer}
+  .iconbtn:hover{background:var(--bg-soft)}
+  .iconbtn svg{width:22px;height:22px;stroke:var(--ink);fill:none;stroke-width:1.7}
+  .cart-badge{position:relative}
+  .cart-badge i{position:absolute;top:-4px;right:-6px;background:var(--orange);color:#fff;font-size:10px;font-weight:700;font-style:normal;min-width:17px;height:17px;border-radius:9px;display:grid;place-items:center;padding:0 4px}
+  .hamburger{display:none;border:0;background:none;cursor:pointer;padding:8px}
+  .hamburger svg{width:26px;height:26px;stroke:var(--ink)}
+
+  /* ---------- NAV ---------- */
+  nav.cats{background:#fff;border-bottom:1px solid var(--line)}
+  nav.cats ul{display:flex;align-items:center;gap:4px;list-style:none;height:50px}
+  nav.cats a{display:flex;align-items:center;height:50px;padding:0 16px;font-weight:600;font-size:14px;color:var(--ink);position:relative;transition:color .15s}
+  nav.cats a.hot{color:var(--orange)}
+  nav.cats a:hover{color:var(--orange)}
+  nav.cats a::after{content:"";position:absolute;left:16px;right:16px;bottom:0;height:3px;background:var(--orange);border-radius:3px 3px 0 0;transform:scaleX(0);transition:transform .18s}
+  nav.cats a:hover::after{transform:scaleX(1)}
+  @media(max-width:980px){.search{order:3;flex-basis:100%}.header-main{flex-wrap:wrap;height:auto;padding:14px 0;gap:14px}nav.cats{display:none}.hamburger{display:block;order:-1}}
+
+  /* ---------- BREADCRUMB ---------- */
+  .crumb{font-size:13px;color:var(--muted);padding:18px 0 0}
+  .crumb a:hover{color:var(--orange)}
+  .crumb span{color:var(--ink);font-weight:500}
+
+  /* ---------- HERO ---------- */
+  .hero{padding:24px 0 8px}
+  .hero-card{
+    background:var(--bg-warm);
+    border:1px solid #FCE3D2;
+    border-radius:22px;
+    padding:54px 48px 48px;
+    color:var(--ink);
+    position:relative;overflow:hidden;text-align:center;
+  }
+  .hero-card::before{content:"";position:absolute;right:-110px;top:-110px;width:300px;height:300px;background:radial-gradient(circle,rgba(242,84,27,.10),transparent 70%);pointer-events:none}
+  .hero-card::after{content:"";position:absolute;left:-90px;bottom:-90px;width:240px;height:240px;background:radial-gradient(circle,rgba(242,84,27,.06),transparent 70%);pointer-events:none}
+  .hero-card > *{position:relative;z-index:1}
+  .hero-eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--orange-dark);
+    background:#fff;border:1px solid #FBD9C9;
+    padding:6px 14px;border-radius:999px;margin-bottom:18px;
+  }
+  .hero-eyebrow::before{content:"";width:6px;height:6px;background:var(--orange);border-radius:50%}
+  .hero h1{font-size:clamp(28px,4vw,42px);font-weight:800;margin:0 auto;max-width:18ch}
+  .hero p.lead{margin:14px auto 0;font-size:15.5px;color:var(--muted);max-width:58ch}
+
+  .hero-chips{margin:24px auto 0;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:760px}
+  .hero-chip{
+    display:inline-flex;align-items:center;gap:7px;
+    padding:9px 15px;background:#fff;border:1px solid var(--line);border-radius:999px;
+    font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;
+    transition:border-color .15s,background .15s,color .15s,transform .12s;
+  }
+  .hero-chip:hover{border-color:var(--orange);color:var(--orange);background:var(--orange-tint);transform:translateY(-1px)}
+  .hero-chip .ch-num{font-family:'Manrope';font-weight:800;font-size:11px;color:#9099A1;letter-spacing:.04em}
+  .hero-chip:hover .ch-num{color:var(--orange)}
+
+  .hero-meta{margin:20px auto 0;display:inline-flex;flex-wrap:wrap;justify-content:center;gap:8px 18px;font-size:13px;color:var(--muted)}
+  .hero-meta span{display:inline-flex;align-items:center;gap:6px}
+  .hero-meta svg{width:14px;height:14px;stroke:var(--orange);fill:none;stroke-width:1.9;flex:none}
+  .hero-meta b{color:var(--ink);font-weight:700}
+  .hero-meta .dot-sep{color:var(--line);font-weight:700}
+
+  @media(max-width:640px){
+    .hero-card{padding:36px 22px 32px;border-radius:18px}
+    .hero h1{font-size:25px}
+    .hero p.lead{font-size:14.5px;margin-top:10px}
+    .hero-chips{gap:6px;margin-top:18px}
+    .hero-chip{padding:8px 12px;font-size:12.5px}
+    .hero-eyebrow{font-size:10.5px;padding:5px 12px}
+    .hero-meta{font-size:12px;gap:6px 12px;margin-top:14px}
+    .hero-meta .dot-sep{display:none}
+  }
+
+  /* ---------- LAYOUT — rovnaký ako FAQ ---------- */
+  .layout{display:grid;grid-template-columns:248px 1fr;gap:48px;padding:44px 0 64px;align-items:start}
+  @media(max-width:900px){.layout{grid-template-columns:1fr;gap:24px}}
+
+  /* ---------- SIDEBAR ---------- */
+  .side{position:sticky;top:96px}
+  .side h4{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin:0 0 12px 12px;font-weight:700}
+  .side a{display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:11px;color:var(--muted);font-weight:600;font-size:14px;transition:all .15s}
+  .side a .dot{width:7px;height:7px;border-radius:50%;background:var(--line);transition:all .15s;flex:none}
+  .side a:hover{background:var(--bg-soft);color:var(--ink)}
+  .side a.active{background:var(--orange-tint);color:var(--orange-dark)}
+  .side a.active .dot{background:var(--orange);box-shadow:0 0 0 4px rgba(242,84,27,.18)}
+  .side-rail{display:flex;flex-direction:column;gap:2px}
+  @media(max-width:900px){
+    .side{position:static;margin:0 -24px}
+    .side h4{display:none}
+    .side-rail{flex-direction:row;overflow-x:auto;gap:8px;padding:4px 24px 6px;scrollbar-width:none}
+    .side-rail::-webkit-scrollbar{display:none}
+    .side a{white-space:nowrap;border:1px solid var(--line);padding:9px 15px}
+    .side a .dot{display:none}
+  }
+
+  /* ---------- SECTIONS ---------- */
+  .doc-section{margin-bottom:48px;scroll-margin-top:120px}
+  .sec-head{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+  .sec-head .num{font-family:'Manrope';font-weight:800;font-size:14px;color:var(--orange);background:var(--orange-tint);border-radius:9px;width:34px;height:34px;display:grid;place-items:center;flex:none}
+  .sec-head h2{font-size:23px;font-weight:800}
+  .intro{font-size:16px;color:var(--muted);margin-bottom:22px;max-width:70ch}
+
+  .prose{font-size:15.5px;color:#3c4148;line-height:1.75;max-width:70ch}
+  .prose > * + *{margin-top:14px}
+  .prose strong{color:var(--ink);font-weight:700}
+  .prose a{color:var(--orange);font-weight:600;border-bottom:1px solid rgba(242,84,27,.3);transition:border-color .15s}
+  .prose a:hover{border-color:var(--orange)}
+  .prose ul,.prose ol{padding-left:22px}
+  .prose li{margin-bottom:6px}
+  .prose li::marker{color:var(--muted)}
+
+  /* ---------- EARN CARDS ---------- */
+  .earn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:6px}
+  .earn-card{
+    position:relative;background:#fff;border:1px solid var(--line);border-radius:16px;
+    padding:22px 20px;transition:border-color .15s,transform .12s,box-shadow .15s;
+  }
+  .earn-card:hover{border-color:var(--orange);transform:translateY(-2px);box-shadow:0 10px 30px rgba(242,84,27,.10)}
+  .earn-card.featured{border-color:#FBD9C9;background:linear-gradient(180deg,var(--orange-tint) 0%,#fff 60%)}
+  .earn-icon{
+    width:46px;height:46px;border-radius:12px;
+    background:var(--orange-tint);color:var(--orange);
+    display:grid;place-items:center;margin-bottom:14px;
+  }
+  .earn-card.featured .earn-icon{background:var(--orange);color:#fff}
+  .earn-icon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8}
+  .earn-tag{
+    position:absolute;top:18px;right:18px;
+    font-family:'Manrope';font-weight:800;font-size:10.5px;color:#fff;background:var(--orange);
+    padding:3px 9px;border-radius:999px;letter-spacing:.04em;
+  }
+  .earn-label{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:6px}
+  .earn-points{font-family:'Manrope';font-weight:800;font-size:32px;color:var(--ink);letter-spacing:-.02em;line-height:1;margin-bottom:6px}
+  .earn-points b{color:var(--orange)}
+  .earn-detail{font-size:13.5px;color:var(--muted);line-height:1.5}
+  @media(max-width:760px){.earn-grid{grid-template-columns:1fr;gap:10px}.earn-card{padding:18px}.earn-points{font-size:28px}}
+
+  /* ---------- TIMELINE ---------- */
+  .timeline{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:6px}
+  .tile{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;gap:12px;align-items:flex-start}
+  .tile .tico{flex:none;width:38px;height:38px;border-radius:10px;background:var(--orange-tint);display:grid;place-items:center}
+  .tile .tico svg{width:18px;height:18px;stroke:var(--orange);fill:none;stroke-width:1.9}
+  .tile b{display:block;font-family:'Manrope';font-weight:800;font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:3px}
+  .tile .tval{display:block;color:var(--ink);font-weight:700;font-size:15px;line-height:1.4}
+  .tile .tnote{display:block;font-size:13px;color:var(--muted);margin-top:5px;line-height:1.5}
+  @media(max-width:760px){.timeline{grid-template-columns:1fr}}
+
+  /* ---------- TIER LADDER ---------- */
+  .tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:6px}
+  .tier{
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:20px 18px 36px;text-align:left;
+    transition:border-color .15s,transform .12s,box-shadow .15s;
+    position:relative;overflow:hidden;
+  }
+  .tier:hover{border-color:var(--orange);transform:translateY(-2px);box-shadow:0 10px 24px rgba(242,84,27,.10)}
+  .tier::after{content:"";position:absolute;left:18px;right:18px;bottom:14px;height:3px;background:var(--line-soft);border-radius:3px}
+  .tier .tbar{position:absolute;left:18px;bottom:14px;height:3px;border-radius:3px;background:var(--orange);z-index:1}
+  .tier-num{font-family:'Manrope';font-weight:800;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .tier-points{font-family:'Manrope';font-weight:800;font-size:30px;color:var(--ink);letter-spacing:-.02em;line-height:1;margin:6px 0 4px}
+  .tier-points small{font-weight:700;font-size:14px;color:var(--muted);letter-spacing:0;margin-left:2px}
+  .tier-label{font-size:13px;color:var(--muted)}
+  @media(max-width:760px){.tiers{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:440px){.tiers{grid-template-columns:1fr}}
+
+  /* ---------- STATES ---------- */
+  .states{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+  .state{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+  .state-dot{flex:none;width:10px;height:10px;border-radius:50%;margin-top:7px}
+  .state.pending .state-dot{background:#1976ff;box-shadow:0 0 0 4px rgba(25,118,255,.15)}
+  .state.active .state-dot{background:#16a34a;box-shadow:0 0 0 4px rgba(22,163,74,.15)}
+  .state.used .state-dot{background:#7c3aed;box-shadow:0 0 0 4px rgba(124,58,237,.15)}
+  .state.expired .state-dot{background:#c83025;box-shadow:0 0 0 4px rgba(200,48,37,.15)}
+  .state b{display:block;font-family:'Manrope';font-weight:800;font-size:14px;color:var(--ink);margin-bottom:2px}
+  .state p{font-size:13.5px;color:var(--muted);line-height:1.5;margin:0}
+  @media(max-width:640px){.states{grid-template-columns:1fr}}
+
+  /* ---------- ACCORDION (rovnaký ako FAQ) ---------- */
+  .acc{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:#fff}
+  .acc + .acc{margin-top:10px}
+  .acc summary{list-style:none;cursor:pointer;display:flex;align-items:flex-start;gap:16px;padding:17px 20px;font-family:'Manrope';font-weight:700;font-size:15.5px;color:var(--ink);transition:color .15s}
+  .acc summary::-webkit-details-marker{display:none}
+  .acc summary:hover{color:var(--orange)}
+  .acc .chev{margin-left:auto;flex:none;width:24px;height:24px;border-radius:50%;background:var(--bg-soft);display:grid;place-items:center;transition:transform .25s,background .15s;margin-top:1px}
+  .acc .chev svg{width:14px;height:14px;stroke:var(--ink);fill:none;stroke-width:2.2}
+  .acc[open] .chev{transform:rotate(180deg);background:var(--orange)}
+  .acc[open] .chev svg{stroke:#fff}
+  .acc[open] summary{color:var(--orange)}
+  .acc .body{padding:0 20px 20px 20px;color:#3c4148;font-size:15px;line-height:1.7}
+  .acc .body p + p{margin-top:10px}
+  .acc .body a{color:var(--orange);font-weight:600;border-bottom:1px solid rgba(242,84,27,.3)}
+  .acc .body a:hover{border-color:var(--orange)}
+
+  /* Quote inside FAQ */
+  .quote{
+    background:var(--bg-warm);border:1px solid #FCE3D2;border-left:3px solid var(--orange);
+    border-radius:var(--radius);padding:12px 16px;
+    color:var(--ink);font-style:italic;font-family:'Manrope';font-weight:500;
+    font-size:14.5px;line-height:1.55;margin-bottom:10px;
+  }
+
+  @media(max-width:640px){
+    .sec-head h2{font-size:20px}
+    .prose{font-size:15px;line-height:1.7}
+    .acc summary{font-size:14.5px;padding:14px 16px}
+    .acc .body{padding:0 16px 16px 16px;font-size:14px}
+  }
+
+  /* ---------- CONTACT CALLOUT ---------- */
+  .ccallout{background:var(--orange-tint);border:1px solid #FBD9C9;border-radius:var(--radius);padding:30px 32px;display:flex;align-items:center;gap:28px;margin:8px 0 44px;flex-wrap:wrap}
+  .ccallout .ico{width:54px;height:54px;background:var(--orange);border-radius:14px;display:grid;place-items:center;flex:none}
+  .ccallout .ico svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:1.8}
+  .ccallout h3{font-size:19px;font-weight:800;margin-bottom:3px}
+  .ccallout p{color:var(--muted);font-size:14.5px;max-width:46ch}
+  .ccallout .links{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:9px;height:48px;padding:0 22px;border-radius:11px;font-weight:700;font-size:14.5px;font-family:'Manrope';transition:transform .12s,background .15s,box-shadow .15s,border-color .15s,color .15s}
+  .btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.9}
+  .btn-primary{background:var(--orange);color:#fff;box-shadow:0 8px 20px rgba(242,84,27,.28)}
+  .btn-primary:hover{background:var(--orange-dark);transform:translateY(-1px)}
+  .btn-ghost{background:#fff;color:var(--ink);border:1.5px solid #FBD9C9}
+  .btn-ghost:hover{border-color:var(--orange);color:var(--orange)}
+  @media(max-width:640px){.ccallout .links{margin-left:0;width:100%}.btn{flex:1;justify-content:center}}
+
+  /* ---------- BACK TO TOP ---------- */
+  .totop{position:fixed;right:22px;bottom:22px;width:44px;height:44px;border-radius:50%;background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:0 8px 22px rgba(20,23,26,.12);cursor:pointer;display:grid;place-items:center;opacity:0;transform:translateY(10px);transition:opacity .2s,transform .2s,border-color .15s,color .15s;z-index:80}
+  .totop.show{opacity:1;transform:translateY(0)}
+  .totop:hover{border-color:var(--orange);color:var(--orange)}
+  .totop svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.2}
+
+  /* ---------- FOOTER ---------- */
+  footer.site{background:var(--footer);color:#fff;margin-top:20px}
+  .foot-top{display:grid;grid-template-columns:1.3fr 1fr 1fr 1.2fr;gap:40px;padding:54px 0 44px}
+  .foot-col h5{font-family:'Manrope';font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;margin-bottom:18px}
+  .foot-col ul{list-style:none}
+  .foot-col li{margin-bottom:10px}
+  .foot-col a{color:rgba(255,255,255,.6);font-size:14px;transition:color .15s}
+  .foot-col a:hover{color:var(--orange)}
+  .foot-col .cs-num{font-family:'Manrope';font-size:21px;font-weight:800;color:#fff;margin-bottom:6px}
+  .foot-col .cs-sub{color:rgba(255,255,255,.55);font-size:13.5px;margin-bottom:4px}
+  .socials{display:flex;gap:10px;margin-top:6px}
+  .socials a{width:38px;height:38px;border-radius:10px;background:#222428;display:grid;place-items:center;transition:background .15s}
+  .socials a:hover{background:var(--orange)}
+  .socials svg{width:18px;height:18px;fill:#fff}
+  .news{border-top:1px solid var(--footer-line);border-bottom:1px solid var(--footer-line);padding:26px 0}
+  .news .wrap{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+  .news h5{font-family:'Manrope';font-size:16px;font-weight:800;max-width:30ch}
+  .news form{display:flex;gap:10px;flex:1;min-width:280px;max-width:480px;margin-left:auto}
+  .news input{flex:1;height:48px;border-radius:11px;border:1px solid var(--footer-line);background:#222428;color:#fff;padding:0 18px;font-family:inherit;font-size:14px;outline:none}
+  .news input::placeholder{color:rgba(255,255,255,.45)}
+  .news input:focus{border-color:var(--orange)}
+  .foot-bottom{display:flex;align-items:center;justify-content:space-between;padding:24px 0;gap:18px;flex-wrap:wrap}
+  .foot-bottom .copy{color:rgba(255,255,255,.5);font-size:13px}
+  .pays{display:flex;gap:8px;flex-wrap:wrap}
+  .pays span{background:#fff;border-radius:6px;height:26px;padding:0 9px;display:grid;place-items:center;font-size:10px;font-weight:800;color:#16181B;font-family:'Manrope';letter-spacing:.02em}
+  @media(max-width:900px){.foot-top{grid-template-columns:1fr 1fr;gap:32px}}
+  @media(max-width:560px){.foot-top{grid-template-columns:1fr}.news form{margin-left:0}}
+
+  /* mobile menu */
+  .mmenu{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .2s}
+  .mmenu.open{opacity:1;pointer-events:auto}
+  .mmenu-panel{position:absolute;left:0;top:0;bottom:0;width:300px;max-width:84vw;background:#fff;padding:22px;transform:translateX(-100%);transition:transform .25s;overflow-y:auto}
+  .mmenu.open .mmenu-panel{transform:none}
+  .mmenu-panel a{display:block;padding:14px 8px;font-weight:600;border-bottom:1px solid var(--line-soft);font-size:15px}
+  .mmenu-panel a:hover{color:var(--orange)}
+  .mmenu .close{float:right;border:0;background:var(--bg-soft);width:38px;height:38px;border-radius:10px;cursor:pointer;font-size:18px}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+  @media print{.utility,header.site,nav.cats,.side,.totop,.ccallout,footer.site,.hero-chips,.mmenu{display:none!important}.layout{display:block;padding:0}.doc-section{break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<!-- UTILITY BAR -->
+<div class="utility"><div class="wrap">
+  <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> Doručenie do 24 hodín</span>
+  <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> Bezplatné vrátenie tovaru</span>
+  <span><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> Zákaznícky servis 8:00–20:00</span>
+</div></div>
+
+<!-- HEADER -->
+<header class="site">
+  <div class="wrap header-main">
+    <button class="hamburger" id="burger" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    <a href="https://gymbeam.sk" class="logo">Gym<b>Beam</b></a>
+    <div class="search">
+      <input type="text" placeholder="Čo hľadáte? Napr. proteín, kreatín, legíny…" aria-label="Hľadať">
+      <button aria-label="Hľadať"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></button>
+    </div>
+    <div class="header-actions">
+      <a class="iconbtn" href="https://gymbeam.sk/customer/account/login">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Prihlásiť
+      </a>
+      <a class="iconbtn" href="#">
+        <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-7-10a4 4 0 017-2.6A4 4 0 0119 11c0 5.5-7 10-7 10z"/></svg>Obľúbené
+      </a>
+      <a class="iconbtn cart-badge" href="#">
+        <svg viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M6 6L5 3H2"/></svg>Košík<i>0</i>
+      </a>
+    </div>
+  </div>
+  <nav class="cats"><div class="wrap"><ul>
+    <li><a href="https://gymbeam.sk/zdrave-potraviny">Potraviny</a></li>
+    <li><a href="https://gymbeam.sk/3-proteiny">Proteíny</a></li>
+    <li><a href="https://gymbeam.sk/sportova-vyziva">Športová výživa</a></li>
+    <li><a href="https://gymbeam.sk/fitness-oblecenie">Oblečenie</a></li>
+    <li><a href="https://gymbeam.sk/prislusenstvo">Príslušenstvo</a></li>
+    <li><a class="hot" href="https://gymbeam.sk/top-ponuky">Top ponuky</a></li>
+  </ul></div></nav>
+</header>
+
+<!-- MOBILE MENU -->
+<div class="mmenu" id="mmenu">
+  <div class="mmenu-panel">
+    <button class="close" id="mclose" aria-label="Zavrieť">✕</button>
+    <a href="https://gymbeam.sk/zdrave-potraviny">Potraviny</a>
+    <a href="https://gymbeam.sk/3-proteiny">Proteíny</a>
+    <a href="https://gymbeam.sk/sportova-vyziva">Športová výživa</a>
+    <a href="https://gymbeam.sk/fitness-oblecenie">Oblečenie</a>
+    <a href="https://gymbeam.sk/prislusenstvo">Príslušenstvo</a>
+    <a href="https://gymbeam.sk/top-ponuky">Top ponuky</a>
+    <a href="https://gymbeam.sk/customer/account/login">Prihlásiť sa</a>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+    <div class="crumb"><a href="https://gymbeam.sk">Hlavná stránka</a> » <a href="faqs.html">Pomoc</a> » <span>Vernostný program</span></div>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero"><div class="wrap">
+    <div class="hero-card">
+      <div class="hero-eyebrow">Vernostný program</div>
+      <h1>GymBeam Body — odmena za vašu vernosť</h1>
+      <p class="lead">Zbierajte body za každý nákup a recenziu. Vymeňte ich za vybrané produkty bez ďalšieho doplácania.</p>
+
+      <div class="hero-chips" aria-label="Rýchle odkazy">
+        <a class="hero-chip" href="#prehlad"><span class="ch-num">01</span> Prehľad</a>
+        <a class="hero-chip" href="#zber"><span class="ch-num">02</span> Získavanie bodov</a>
+        <a class="hero-chip" href="#aktivacia"><span class="ch-num">03</span> Aktivácia a platnosť</a>
+        <a class="hero-chip" href="#odmeny"><span class="ch-num">04</span> Odmeny</a>
+        <a class="hero-chip" href="#stavy"><span class="ch-num">05</span> Stavy bodov</a>
+        <a class="hero-chip" href="#faq"><span class="ch-num">06</span> Časté otázky</a>
+      </div>
+
+      <div class="hero-meta">
+        <span><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Platí od <b>29.&nbsp;9.&nbsp;2025</b></span>
+        <span class="dot-sep">·</span>
+        <span><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> Body platia <b>90&nbsp;dní</b></span>
+        <span class="dot-sep">·</span>
+        <span><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg> <b>4</b> kategórie odmien</span>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- LAYOUT -->
+  <div class="wrap">
+    <div class="layout">
+
+      <!-- SIDEBAR -->
+      <aside class="side">
+        <h4>Obsah</h4>
+        <div class="side-rail" id="rail">
+          <a href="#prehlad" class="active"><span class="dot"></span>Prehľad</a>
+          <a href="#zber"><span class="dot"></span>Získavanie bodov</a>
+          <a href="#aktivacia"><span class="dot"></span>Aktivácia a platnosť</a>
+          <a href="#odmeny"><span class="dot"></span>Odmeny</a>
+          <a href="#stavy"><span class="dot"></span>Stavy bodov</a>
+          <a href="#faq"><span class="dot"></span>Časté otázky</a>
+        </div>
+      </aside>
+
+      <!-- CONTENT -->
+      <div class="content" id="content">
+
+        <!-- 01 PREHĽAD -->
+        <section class="doc-section" id="prehlad">
+          <div class="sec-head"><div class="num">01</div><h2>Prehľad programu</h2></div>
+          <p class="intro">Vernostný program <strong>GymBeam Body</strong> umožňuje zákazníkom zbierať body za nákupy a recenzie. Body si môžete vymeniť za vybrané produkty <strong>bez dodatočného platenia</strong>.</p>
+          <div class="prose">
+            <p>Body získavajú iba <strong>prihlásení zákazníci</strong>. Stačí mať vytvorený účet na webe alebo v aplikácii — do programu sa zaradíte automaticky.</p>
+            <p>Program platí pre objednávky od <strong>29. 9. 2025</strong>. Body sa nezapočítavajú spätne pred týmto dátumom.</p>
+            <p>Všetky údaje vrátane histórie bodov nájdete v zákazníckom konte v sekcii <strong>Vernostný program</strong>.</p>
+          </div>
+        </section>
+
+        <!-- 02 ZÍSKAVANIE BODOV -->
+        <section class="doc-section" id="zber">
+          <div class="sec-head"><div class="num">02</div><h2>Ako získavate body</h2></div>
+          <p class="intro">Tri spôsoby, ako body pripísať na váš účet. Pripočítavajú sa z <strong>finálnej ceny produktov</strong> po zľavách — bez nákladov na dopravu a platbu.</p>
+
+          <div class="earn-grid">
+            <div class="earn-card">
+              <div class="earn-icon">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              </div>
+              <div class="earn-label">Nákup na webe</div>
+              <div class="earn-points"><b>1</b> bod</div>
+              <div class="earn-detail">za každé <strong>1 €</strong> z hodnoty nákupu</div>
+            </div>
+
+            <div class="earn-card featured">
+              <span class="earn-tag">2× viac</span>
+              <div class="earn-icon">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>
+              </div>
+              <div class="earn-label">Nákup v aplikácii</div>
+              <div class="earn-points"><b>2</b> body</div>
+              <div class="earn-detail">za každé <strong>1 €</strong> z hodnoty nákupu</div>
+            </div>
+
+            <div class="earn-card">
+              <div class="earn-icon">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
+              </div>
+              <div class="earn-label">Recenzia produktu</div>
+              <div class="earn-points"><b>10</b> bodov</div>
+              <div class="earn-detail">za každú <strong>schválenú</strong> recenziu</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 03 AKTIVÁCIA A PLATNOSŤ -->
+        <section class="doc-section" id="aktivacia">
+          <div class="sec-head"><div class="num">03</div><h2>Aktivácia a platnosť bodov</h2></div>
+          <p class="intro">Aby ste predišli problémom pri vrátení tovaru, body z nákupov sa aktivujú s časovým odstupom. Body za recenzie sú dostupné okamžite.</p>
+
+          <div class="timeline">
+            <div class="tile">
+              <div class="tico"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+              <div>
+                <b>Body za nákup</b>
+                <span class="tval">Aktivujú sa po 30 dňoch</span>
+                <span class="tnote">Aktivácia prebehne automaticky po 30 dňoch od doručenia objednávky.</span>
+              </div>
+            </div>
+            <div class="tile">
+              <div class="tico"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <div>
+                <b>Body za recenzie</b>
+                <span class="tval">Aktivujú sa okamžite</span>
+                <span class="tnote">Body sa pripíšu hneď po schválení recenzie.</span>
+              </div>
+            </div>
+            <div class="tile">
+              <div class="tico"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg></div>
+              <div>
+                <b>Platnosť bodov</b>
+                <span class="tval">90 dní po aktivácii</span>
+                <span class="tnote">Pri výmene sa použijú <strong>najstaršie body ako prvé</strong> (FIFO).</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 04 ODMENY -->
+        <section class="doc-section" id="odmeny">
+          <div class="sec-head"><div class="num">04</div><h2>Kategórie odmien</h2></div>
+          <p class="intro">Body si môžete vymeniť v <strong>4 kategóriách</strong> podľa hodnoty. Hodnota odmeny rastie s počtom nazbieraných bodov.</p>
+
+          <div class="tiers">
+            <div class="tier">
+              <div class="tier-num">Kategória 1</div>
+              <div class="tier-points">250<small> bodov</small></div>
+              <div class="tier-label">Štartová úroveň</div>
+              <div class="tbar" style="width:18%"></div>
+            </div>
+            <div class="tier">
+              <div class="tier-num">Kategória 2</div>
+              <div class="tier-points">450<small> bodov</small></div>
+              <div class="tier-label">Pokročilá</div>
+              <div class="tbar" style="width:38%"></div>
+            </div>
+            <div class="tier">
+              <div class="tier-num">Kategória 3</div>
+              <div class="tier-points">700<small> bodov</small></div>
+              <div class="tier-label">Veľká odmena</div>
+              <div class="tbar" style="width:62%"></div>
+            </div>
+            <div class="tier">
+              <div class="tier-num">Kategória 4</div>
+              <div class="tier-points">1&nbsp;000<small> bodov</small></div>
+              <div class="tier-label">Top kategória</div>
+              <div class="tbar" style="width:100%"></div>
+            </div>
+          </div>
+
+          <div class="prose" style="margin-top:18px">
+            <p>Konkrétny zoznam produktov v jednotlivých kategóriách nájdete vo vašom konte v sekcii <strong>Vernostný program → Odmeny</strong>.</p>
+          </div>
+        </section>
+
+        <!-- 05 STAVY -->
+        <section class="doc-section" id="stavy">
+          <div class="sec-head"><div class="num">05</div><h2>Stavy bodov</h2></div>
+          <p class="intro">Každý bod prechádza počas životného cyklu cez tieto stavy. Vo svojom konte ich vidíte oddelené, aby ste vedeli, koľko bodov je práve k dispozícii.</p>
+
+          <div class="states">
+            <div class="state pending">
+              <span class="state-dot"></span>
+              <div>
+                <b>V procese aktivácie</b>
+                <p>Body sú pripísané, ale ešte neaktívne — čakajú na uplynutie 30-dňovej lehoty.</p>
+              </div>
+            </div>
+            <div class="state active">
+              <span class="state-dot"></span>
+              <div>
+                <b>Aktívne</b>
+                <p>Body sú dostupné na okamžitú výmenu za odmenu.</p>
+              </div>
+            </div>
+            <div class="state used">
+              <span class="state-dot"></span>
+              <div>
+                <b>Použité</b>
+                <p>Body boli úspešne vymenené za odmenu.</p>
+              </div>
+            </div>
+            <div class="state expired">
+              <span class="state-dot"></span>
+              <div>
+                <b>Expirované</b>
+                <p>Platnosť bodov vypršala (90 dní po aktivácii) a už ich nie je možné použiť.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 06 FAQ -->
+        <section class="doc-section" id="faq">
+          <div class="sec-head"><div class="num">06</div><h2>Časté otázky</h2></div>
+
+          <details class="acc"><summary>Kedy program začína?<span class="chev"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+            <div class="body"><p>Vernostný program platí od <strong>29. 9. 2025</strong> vrátane. Nákupy uskutočnené pred týmto dátumom sa do programu nezapočítavajú.</p></div>
+          </details>
+
+          <details class="acc"><summary>Ako sa do programu zapojiť?<span class="chev"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+            <div class="body"><p>Stačí si <strong>vytvoriť účet</strong> na webstránke alebo v mobilnej aplikácii. Do programu sa zaradíte automaticky a body sa začnú pripisovať pri ďalšom nákupe.</p></div>
+          </details>
+
+          <details class="acc"><summary>Ako napísať recenziu a získať body?<span class="chev"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+            <div class="body"><p>Prihlásení zákazníci môžu pridať recenziu priamo v detaile produktu alebo v sekcii <strong>Moje konto → Recenzie</strong>. Po schválení recenzie získate <strong>10 bodov</strong>.</p></div>
+          </details>
+
+          <details class="acc"><summary>Môžem získať body za staršie nákupy spätne?<span class="chev"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+            <div class="body"><p>Áno — ak si vytvoríte účet s <strong>rovnakou e-mailovou adresou</strong>, ktorou ste nakupovali, body sa pripíšu spätne pre objednávky od 29. 9. 2025.</p></div>
+          </details>
+
+          <details class="acc"><summary>Majú body finančnú hodnotu?<span class="chev"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+            <div class="body">
+              <div class="quote">Body nemajú priamu finančnú hodnotu.</div>
+              <p>Slúžia výhradne na výber produktov z kategórií odmien — nedajú sa vyplatiť ani konvertovať na peniaze.</p>
+            </div>
+          </details>
+
+          <details class="acc"><summary>Ako sa body počítajú pri zľavnenom nákupe?<span class="chev"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+            <div class="body"><p>Body sa vypočítavajú z <strong>finálnej ceny produktov</strong> po uplatnení zliav, <strong>bez nákladov na dopravu a platbu</strong>.</p></div>
+          </details>
+
+          <details class="acc"><summary>V akom poradí sa body používajú pri výmene?<span class="chev"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+            <div class="body"><p>Pri výmene za odmenu sa použijú <strong>najstaršie body ako prvé</strong> (FIFO princíp). Predídete tak strate bodov tesne pred ich expiráciou.</p></div>
+          </details>
+        </section>
+
+        <!-- CONTACT CALLOUT -->
+        <div class="ccallout">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+          <div>
+            <h3>Potrebujete poradiť s vernostným programom?</h3>
+            <p>Náš zákaznícky servis je tu pre vás v pracovné dni 8:00–20:00.</p>
+          </div>
+          <div class="links">
+            <a class="btn btn-primary" href="tel:0233057087"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3 19.5 19.5 0 01-6-6 19.8 19.8 0 01-3-8.6A2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .4 1.9.7 2.8a2 2 0 01-.5 2.1L8 9.9a16 16 0 006 6l1.3-1.3a2 2 0 012.1-.4c.9.3 1.8.6 2.8.7a2 2 0 011.7 2z"/></svg>02 33 057 087</a>
+            <a class="btn btn-ghost" href="mailto:info@gymbeam.sk"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 6l8 6 8-6"/></svg>info@gymbeam.sk</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- BACK TO TOP -->
+<button class="totop" id="toTop" aria-label="Späť hore">
+  <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
+
+<!-- FOOTER -->
+<footer class="site">
+  <div class="news"><div class="wrap">
+    <h5>Motivácia, tipy a akcie priamo pre vás</h5>
+    <form onsubmit="return false">
+      <input type="email" placeholder="Váš e-mail" aria-label="E-mail">
+      <button class="btn btn-primary" type="submit">Odoslať</button>
+    </form>
+  </div></div>
+
+  <div class="wrap foot-top">
+    <div class="foot-col">
+      <h5>O GymBeam</h5>
+      <ul>
+        <li><a href="https://gymbeam.sk/content/kontakt">Kontakt</a></li>
+        <li><a href="https://gymbeam.sk/blog">Blog</a></li>
+        <li><a href="https://gymbeam.sk/content/obchodne-podmienky">Obchodné podmienky</a></li>
+        <li><a href="https://gymbeam.sk/content/ochrana-osobnych-udajov">Ochrana osobných údajov</a></li>
+        <li><a href="reklamacnyporiadok.html">Reklamačný poriadok</a></li>
+        <li><a href="https://jobs.gymbeam.com/">Pridaj sa do tímu</a></li>
+        <li><a href="https://gymbeam.sk/content/velkoobchod">Veľkoobchod</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h5>Pomoc</h5>
+      <ul>
+        <li><a href="faqs.html">Najčastejšie otázky</a></li>
+        <li><a href="https://gymbeam.sk/content/overovanie-recenzii">Overovanie recenzií</a></li>
+        <li><a href="https://gymbeam.sk/content/dorucenie-platba">Doručenie a platba</a></li>
+        <li><a href="https://gymbeam.sk/content/predajna-kosice">Predajňa Košice</a></li>
+        <li><a href="https://gymbeam.sk/content/mobilna-aplikacia">Mobilná aplikácia</a></li>
+        <li><a href="https://gymbeam.sk/content/vernostny-program">Vernostný program</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h5>Zákaznícky servis</h5>
+      <div class="cs-num">02 33 057 087</div>
+      <a class="cs-sub" href="mailto:info@gymbeam.sk">info@gymbeam.sk</a>
+      <p class="cs-sub" style="margin-top:14px">Pondelok – Piatok: 08:00–20:00</p>
+      <h5 style="margin-top:26px">Sledujte nás</h5>
+      <div class="socials">
+        <a href="https://www.facebook.com/GymBeamSk" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M14 9h3V6h-3c-2 0-3 1-3 3v2H9v3h2v6h3v-6h2.5l.5-3H14V9z"/></svg></a>
+        <a href="https://instagram.com/gymbeamsk" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="5" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="3.5" fill="none" stroke="#fff" stroke-width="2"/><circle cx="17" cy="7" r="1.2"/></svg></a>
+        <a href="https://www.youtube.com/channel/UCFWF-YVqwOYb4O4sImMqAyg" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M22 8s-.2-1.5-.8-2.1c-.8-.8-1.6-.8-2-.9C16.4 4.7 12 4.7 12 4.7s-4.4 0-7.2.3c-.4.1-1.2.1-2 .9C2.2 6.5 2 8 2 8s-.2 1.7-.2 3.5v1c0 1.8.2 3.5.2 3.5s.2 1.5.8 2.1c.8.8 1.8.8 2.3.9 1.7.2 6.9.3 6.9.3s4.4 0 7.2-.3c.4-.1 1.2-.1 2-.9.6-.6.8-2.1.8-2.1s.2-1.7.2-3.5v-1C22.2 9.7 22 8 22 8zM10 14.5v-5l4 2.5-4 2.5z"/></svg></a>
+        <a href="https://www.tiktok.com/@gymbeam_czsk" aria-label="TikTok"><svg viewBox="0 0 24 24"><path d="M16 4c.3 2 1.6 3.6 3.5 4v2.7c-1.3 0-2.5-.4-3.5-1.1V15a5 5 0 11-5-5c.3 0 .7 0 1 .1v2.8a2.3 2.3 0 102 2.2V4h2z"/></svg></a>
+      </div>
+    </div>
+    <div class="foot-col">
+      <h5>Súvisiace</h5>
+      <ul>
+        <li><a href="faqs.html">Najčastejšie otázky</a></li>
+        <li><a href="reklamacnyporiadok.html">Reklamačný poriadok</a></li>
+        <li><a href="https://gymbeam.sk/customer/account/login">Prihlásiť sa do konta</a></li>
+        <li><a href="https://gymbeam.sk/content/mobilna-aplikacia">Mobilná aplikácia</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="wrap" style="border-top:1px solid var(--footer-line)">
+    <div class="foot-bottom">
+      <div class="copy">© 2014 – 2026 GymBeam · www.gymbeam.sk</div>
+      <div class="pays">
+        <span>VISA</span><span>Mastercard</span><span>Maestro</span><span>TatraPay</span><span>Dobierka</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  /* mobile menu */
+  var burger=document.getElementById('burger'),mmenu=document.getElementById('mmenu'),mclose=document.getElementById('mclose');
+  if(burger){burger.onclick=function(){mmenu.classList.add('open')};}
+  if(mclose){mclose.onclick=function(){mmenu.classList.remove('open')};}
+  if(mmenu){mmenu.addEventListener('click',function(e){if(e.target===mmenu)mmenu.classList.remove('open')});}
+
+  /* accordion: single-open within FAQ section */
+  document.querySelectorAll('#faq details.acc').forEach(function(d){
+    d.addEventListener('toggle',function(){
+      if(d.open){document.querySelectorAll('#faq details.acc').forEach(function(o){if(o!==d)o.open=false;});}
+    });
+  });
+
+  /* scroll-spy */
+  var links=Array.prototype.slice.call(document.querySelectorAll('#rail a'));
+  var sections=links.map(function(l){return document.querySelector(l.getAttribute('href'));}).filter(Boolean);
+  var spy=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var id='#'+e.target.id;
+        links.forEach(function(l){l.classList.toggle('active',l.getAttribute('href')===id);});
+      }
+    });
+  },{rootMargin:'-25% 0px -65% 0px'});
+  sections.forEach(function(s){spy.observe(s);});
+
+  /* back to top */
+  var toTop=document.getElementById('toTop');
+  function onScroll(){if(toTop)toTop.classList.toggle('show',window.scrollY>500);}
+  window.addEventListener('scroll',onScroll,{passive:true});
+  if(toTop){toTop.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});}
+})();
+</script>
+</body>
+</html>
